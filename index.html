@@ -10,17 +10,15 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-left">MEMORY<span>PRO</span></div>
-        <div class="nav-center">LEVEL <span id="current-level">1</span></div>
-        <div class="nav-right">
-            <button id="theme-toggle" class="theme-btn">🌓</button>
+        <div class="nav-top-row">
+            <div class="nav-left">MEMORY<span>PRO</span></div>
+            <div class="nav-center">LVL <span id="current-level">1</span></div>
+            <div class="nav-right"><button id="theme-toggle" class="theme-btn">🌓</button></div>
         </div>
-    </nav>
-
-    <main class="game-area">
+        
         <div class="stats-bar">
             <div class="stat warning-box">
-                <span>Time Left</span>
+                <span>Time</span>
                 <b id="timer">01:00</b>
             </div>
             <div class="stat">
@@ -28,11 +26,13 @@
                 <b id="moves">0</b>
             </div>
             <div class="stat">
-                <span>Pairs Left</span>
+                <span>Pairs</span>
                 <b id="pairs-left">0</b>
             </div>
         </div>
+    </nav>
 
+    <main class="game-area">
         <div id="grid" class="grid"></div>
     </main>
 
