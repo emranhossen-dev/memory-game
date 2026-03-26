@@ -21,7 +21,7 @@ const levels = {
     1: { pairs: 6, time: 30, grid: 'grid-l1' },
     2: { pairs: 10, time: 40, grid: 'grid-l2' },
     3: { pairs: 12, time: 50, grid: 'grid-l3' },
-    4: { pairs: 14, time: 25, grid: 'grid-l4' }
+    4: { pairs: 14, time: 20, grid: 'grid-l4' }
 };
 
 // 4. Game State Variables
@@ -143,25 +143,38 @@ function endLevel(isWin) {
         sounds.win.play().catch(() => {});
         confetti({ particleCount: 150, spread: 70 });
         
-        if (currentLevel < 4) {
-            title.innerText = "Level Complete!";
+        if (currentLevel < 2) {
+            title.innerText = "লেভেল ১ শেষ করার জন্য তোমাকে এক বোতল অভিনন্দন";
             desc.innerText = `Cleared with ${timeLeft}s left!`;
             icon.innerText = "⭐";
-            btn.innerText = "Next Level";
-        } else {
+            btn.innerText = "এ নেক্সট";
+        } 
+        else if(currentLevel < 3) {
+            title.innerText = "লেভেল ২ শেষ করার জন্য এক বালতি অভিনন্দন";
+            desc.innerText = `Cleared with ${timeLeft}s left!`;
+            icon.innerText = "⭐";
+            btn.innerText = "এ নেক্সট";
+        } 
+        else if(currentLevel <4 ) {
+            title.innerText = "আর মাত্র ১টি লেভেল শেষ করে জিতে নাও আইফোন ১৮ প্রো ম্যাক্স";
+            desc.innerText = `Cleared with ${timeLeft}s left!`;
+            icon.innerText = "⭐";
+            btn.innerText = "আখেরি লেভেল";
+        } 
+        else {
             title.innerText = "👑 GRAND MASTER!";
-            desc.innerText = "All levels conquered!";
+            desc.innerText = "আইফোন ১৮ প্রো ম্যাক্স এখনো বের হইনি,, বের হলে যোগাযোগ করার জন্য অনুরোধ করা হলো। ";
             icon.innerText = "🏆";
-            btn.innerText = "Restart Universe";
+            btn.innerText = "সব ধ্বংস।";
             document.body.classList.add('rainbow-mode');
         }
     } else {
         sounds.lose.currentTime = 0;
         sounds.lose.play().catch(() => {});
-        title.innerText = "Time's Up!";
-        desc.innerText = "The clock ran out. Try again?";
+        title.innerText = "সেহরি খাওয়ার সময় শেষ";
+        desc.innerText = "আবার খেলতে চাও?";
         icon.innerText = "💀";
-        btn.innerText = "Retry Level";
+        btn.innerText = "ট্রাই এগ্গেইন";
     }
 
     btn.onclick = () => {
