@@ -10,10 +10,10 @@ const sounds = {
 
 // Level Configuration
 const levels = {
-    1: { pairs: 6, time: 60, name: "grid-l1" },
-    2: { pairs: 10, time: 120, name: "grid-l2" },
-    3: { pairs: 12, time: 150, name: "grid-l3" },
-    4: { pairs: 14, time: 180, name: "grid-l4" }
+    1: { pairs: 6, time: 30, name: "grid-l1" },
+    2: { pairs: 10, time: 60, name: "grid-l2" },
+    3: { pairs: 12, time: 100, name: "grid-l3" },
+    4: { pairs: 14, time: 110, name: "grid-l4" }
 };
 
 let currentLevel = 1;
