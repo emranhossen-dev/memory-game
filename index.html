@@ -1,34 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Game</title>
+    <title>Memory Pro | Level Up</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
-
 <body>
-    <div class="game-wrapper">
-  <div class="header">
-    <div class="stat-box"><span>Time</span><b id="timer">00:00</b></div>
-    <div class="stat-box"><span>Moves</span><b id="moves">0</b></div>
-    <div class="stat-box"><span>Best</span><b id="best-score">-</b></div>
-  </div>
 
-  <div class="grid-container" id="grid"></div>
+    <nav class="navbar">
+        <div class="logo">MEMORY<span>PRO</span></div>
+        <div class="nav-controls">
+            <div class="level-indicator">Level: <span id="current-level">1</span></div>
+            <button id="theme-toggle" class="icon-btn">🌓</button>
+        </div>
+    </nav>
 
-  <div id="win-modal" class="modal">
-    <div class="modal-content">
-      <h2>🎉 Mission Accomplished!</h2>
-      <p>You matched all blocks in <span id="final-time"></span></p>
-      <p>Total Moves: <span id="final-moves"></span></p>
-      <button onclick="location.reload()">Play Again</button>
+    <div class="game-container">
+        <div class="stats-bar">
+            <div class="stat"><span>Time</span><b id="timer">00:00</b></div>
+            <div class="stat"><span>Moves</span><b id="moves">0</b></div>
+            <div class="stat"><span>Best</span><b id="best-score">-</b></div>
+        </div>
+
+        <div id="grid" class="grid level-1"></div>
     </div>
-  </div>
-</div>
+
+    <div id="win-modal" class="modal">
+        <div class="modal-content">
+            <div class="icon-header">🏆</div>
+            <h2>Level Complete!</h2>
+            <p>You finished in <span id="final-time"></span></p>
+            <button id="next-level-btn">Next Level</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
-
 </html>
