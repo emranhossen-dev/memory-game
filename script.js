@@ -21,7 +21,7 @@ const levels = {
     1: { pairs: 6, time: 30, grid: 'grid-l1' },
     2: { pairs: 10, time: 60, grid: 'grid-l2' },
     3: { pairs: 12, time: 100, grid: 'grid-l3' },
-    4: { pairs: 14, time: 100, grid: 'grid-l4' }
+    4: { pairs: 14, time: 30, grid: 'grid-l4' }
 };
 
 // 4. Game State Variables
