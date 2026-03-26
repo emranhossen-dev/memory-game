@@ -1,4 +1,4 @@
-const iconLibrary = ['🔥', '👾', '🚀', '💎', '🌈', '⚡', '🍀', '🍎', '⚽', '🎸', '🍦', '🚁', '🌋', '🛸', '🛰️', '🪐', '🍄', '🥑', '🧨', '🧿', '🧬', '🛡️', '🔑', '🧪', '🏹', '🎨', '🎬', '🎧', '🔭', '📡', '🔋', '🏆'];
+const iconLibrary = ['🍕', '🍔', '🍟', '🍦', '🍩', '🍫', '🍭', '🍓', '🍇', '🍉', '🍌', '🍒', '🍋', '🥑', '🌽', '🍄', '🥕', '🥩', '🥨', '🥐', '🍱', '🍣', '🥟', '🍜', '🍩', '🍪', '🍯', '🍰', '🥧', '🍹'];
 
 let currentLevel = 1;
 let moves = 0;
@@ -12,22 +12,25 @@ const grid = document.getElementById('grid');
 const moveDisplay = document.getElementById('moves');
 const timerDisplay = document.getElementById('timer');
 const levelDisplay = document.getElementById('current-level');
+const targetDisplay = document.getElementById('target-matches');
 
-// 1. Theme Toggler
+// Theme Toggle Logic
 document.getElementById('theme-toggle').addEventListener('click', () => {
     const root = document.documentElement;
-    const currentTheme = root.getAttribute('data-theme');
-    root.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+    const isDark = root.getAttribute('data-theme') === 'dark';
+    root.setAttribute('data-theme', isDark ? 'light' : 'dark');
 });
 
-// 2. Initialize Game Based on Level
 function initLevel(level) {
     grid.innerHTML = '';
     grid.className = `grid level-${level}`;
     levelDisplay.innerText = level;
     
-    let itemCount = level === 1 ? 8 : (level === 2 ? 18 : 32); // Creates 16, 36, 64 tiles
-    const selectedIcons = iconLibrary.slice(0, itemCount);
+    // Level 1: 24 cards (12 pairs) | Level 2: 60 cards (30 pairs)
+    let pairCount = level === 1 ? 12 : 30; 
+    targetDisplay.innerText = pairCount;
+
+    const selectedIcons = iconLibrary.slice(0, pairCount);
     const gameSet = shuffle([...selectedIcons, ...selectedIcons]);
 
     gameSet.forEach(icon => {
@@ -46,9 +49,11 @@ function initLevel(level) {
     resetStats();
 }
 
-// 3. EVENT BUBBLING Logic
+// EVENT BUBBLING: The core of the project
 grid.addEventListener('click', (e) => {
     const card = e.target.closest('.card');
+    
+    // Safety checks
     if (!card || card.classList.contains('flipped') || flipped.length === 2) return;
 
     if (!timerActive) startTimer();
@@ -71,35 +76,35 @@ function checkMatch() {
         matches++;
         flipped = [];
         
-        // Check Win Condition
-        const totalNeeded = (currentLevel === 1 ? 8 : (currentLevel === 2 ? 18 : 32));
-        if (matches === totalNeeded) handleWin();
+        let target = currentLevel === 1 ? 12 : 30;
+        if (matches === target) handleWin();
     } else {
         setTimeout(() => {
             c1.classList.remove('flipped');
             c2.classList.remove('flipped');
             flipped = [];
-        }, 800);
+        }, 700);
     }
 }
 
 function handleWin() {
     clearInterval(timerInterval);
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+    confetti({ particleCount: 200, spread: 80, origin: { y: 0.6 } });
     
     setTimeout(() => {
         document.getElementById('win-modal').style.display = 'flex';
         document.getElementById('final-time').innerText = timerDisplay.innerText;
-    }, 1000);
+        document.getElementById('final-moves').innerText = moves;
+    }, 800);
 }
 
 document.getElementById('next-level-btn').addEventListener('click', () => {
     document.getElementById('win-modal').style.display = 'none';
-    currentLevel = currentLevel < 3 ? currentLevel + 1 : 1;
+    currentLevel = currentLevel === 1 ? 2 : 1; // Toggle between Level 1 and 2
     initLevel(currentLevel);
 });
 
-// Helper Functions
+// Helpers
 function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
 
 function startTimer() {
@@ -114,13 +119,12 @@ function startTimer() {
 
 function resetStats() {
     clearInterval(timerInterval);
-    seconds = 0;
-    moves = 0;
-    matches = 0;
+    seconds = 0; moves = 0; matches = 0;
     timerActive = false;
     flipped = [];
     timerDisplay.innerText = "00:00";
     moveDisplay.innerText = "0";
 }
 
+// Start Game
 initLevel(1);
