@@ -9,14 +9,24 @@
 </head>
 
 <body>
-    <div class="game-container">
-        <div class="stats">
-            <span>Moves: <b id="move-count">0</b></span>
-            <button id="reset">Reset</button>
-        </div>
-        <div class="grid" id="game-grid">
-        </div>
+    <div class="game-wrapper">
+  <div class="header">
+    <div class="stat-box"><span>Time</span><b id="timer">00:00</b></div>
+    <div class="stat-box"><span>Moves</span><b id="moves">0</b></div>
+    <div class="stat-box"><span>Best</span><b id="best-score">-</b></div>
+  </div>
+
+  <div class="grid-container" id="grid"></div>
+
+  <div id="win-modal" class="modal">
+    <div class="modal-content">
+      <h2>🎉 Mission Accomplished!</h2>
+      <p>You matched all blocks in <span id="final-time"></span></p>
+      <p>Total Moves: <span id="final-moves"></span></p>
+      <button onclick="location.reload()">Play Again</button>
     </div>
+  </div>
+</div>
 
     <script src="script.js"></script>
 </body>

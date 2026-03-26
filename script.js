@@ -1,60 +1,83 @@
-const grid = document.getElementById('game-grid');
-const icons = ['🚀', '🚀', '💻', '💻', '⚡', '⚡', '🎨', '🎨', '🔥', '🔥', '🌈', '🌈', '💎', '💎', '🍎', '🍎'];
-let flippedCards = [];
-let matchedCount = 0;
+const emojis = ['🎮', '🕹️', '👾', '🚀', '💎', '🔥', '⚡', '🌈'];
+const gameGrid = [...emojis, ...emojis]; // 16 items for playable mobile grid
+let flipped = [];
+let moves = 0;
+let matches = 0;
+let timerInterval;
+let seconds = 0;
 
-// 1. Initialize Game
-function initGame() {
-  grid.innerHTML = '';
-  const shuffled = icons.sort(() => Math.random() - 0.5);
+function shuffle(array) {
+  return array.sort(() => Math.random() - 0.5);
+}
+
+function startTimer() {
+  timerInterval = setInterval(() => {
+    seconds++;
+    const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+    const secs = String(seconds % 60).padStart(2, '0');
+    document.getElementById('timer').innerText = `${mins}:${secs}`;
+  }, 1000);
+}
+
+function init() {
+  const shuffled = shuffle(gameGrid);
+  const container = document.getElementById('grid');
   
-  shuffled.forEach((icon, index) => {
+  shuffled.forEach((emoji, i) => {
     const card = document.createElement('div');
-    card.classList.add('card');
-    card.dataset.icon = icon;
+    card.className = 'card';
     card.innerHTML = `
       <div class="card-inner">
-        <div class="card-front">?</div>
-        <div class="card-back">${icon}</div>
+        <div class="front"></div>
+        <div class="back">${emoji}</div>
       </div>
     `;
-    grid.appendChild(card);
+    card.dataset.val = emoji;
+    container.appendChild(card);
   });
+  
+  // EVENT BUBBLING: Single listener for all cards
+  container.addEventListener('click', handleCardClick);
 }
 
-// 2. The EVENT BUBBLING Logic
-grid.addEventListener('click', (e) => {
-  // Find the closest card parent from the click target
-  const clickedCard = e.target.closest('.card');
+function handleCardClick(e) {
+  const card = e.target.closest('.card');
+  if (!card || card.classList.contains('flipped') || flipped.length === 2) return;
 
-  // Guard clauses: Ignore if not a card, already flipped, or checking 2 cards
-  if (!clickedCard || 
-      clickedCard.classList.contains('flipped') || 
-      flippedCards.length === 2) return;
+  if (moves === 0 && flipped.length === 0) startTimer();
 
-  clickedCard.classList.add('flipped');
-  flippedCards.push(clickedCard);
+  card.classList.add('flipped');
+  flipped.push(card);
 
-  if (flippedCards.length === 2) {
+  if (flipped.length === 2) {
+    moves++;
+    document.getElementById('moves').innerText = moves;
     checkMatch();
   }
-});
+}
 
 function checkMatch() {
-  const [card1, card2] = flippedCards;
-  
-  if (card1.dataset.icon === card2.dataset.icon) {
-    matchedCount += 2;
-    flippedCards = [];
-    if (matchedCount === icons.length) alert('You Won!');
+  const [c1, c2] = flipped;
+  if (c1.dataset.val === c2.dataset.val) {
+    c1.classList.add('matched');
+    c2.classList.add('matched');
+    matches += 2;
+    flipped = [];
+    if (matches === gameGrid.length) winGame();
   } else {
-    // Flip back after a delay
     setTimeout(() => {
-      card1.classList.remove('flipped');
-      card2.classList.remove('flipped');
-      flippedCards = [];
-    }, 1000);
+      c1.classList.remove('flipped');
+      c2.classList.remove('flipped');
+      flipped = [];
+    }, 800);
   }
 }
 
-initGame();
+function winGame() {
+  clearInterval(timerInterval);
+  document.getElementById('win-modal').style.display = 'flex';
+  document.getElementById('final-time').innerText = document.getElementById('timer').innerText;
+  document.getElementById('final-moves').innerText = moves;
+}
+
+init();
