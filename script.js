@@ -1,27 +1,40 @@
+/**
+ * MEMORY PRO - CORE LOGIC
+ * Includes: Level System, Countdown Timer, Sound Engine, and Emergency Alert
+ */
+
+// 1. Icon Library
 const iconLibrary = ['🍎', '🍌', '🍇', '🍓', '🍒', '🍍', '🥝', '🍉', '🥑', '🌽', '🥕', '🍕', '🍔', '🍟', '🌮', '🍣', '🍦', '🍩', '🍫', '🍭'];
 
+// 2. Sound Engine (Update these paths to your custom MP3 files)
 const sounds = {
-    flip: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
-    match: new Audio('https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3'),
-    win: new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'),
-    lose: new Audio('https://assets.mixkit.co/active_storage/sfx/2511/2511-preview.mp3')
+    flip: new Audio('sounds/flip.mp3'),      
+    match: new Audio('sounds/match.mp3'),    
+    fail: new Audio('sounds/mismatch.mp3'),  
+    win: new Audio('sounds/win.mp3'),        
+    lose: new Audio('sounds/lose.mp3'),      
+    alert: new Audio('sounds/alert.mp3')     // NEW: Emergency alert for last 10 seconds
 };
 
+// 3. Level Configurations
 const levels = {
-    1: { pairs: 6, time: 60, grid: 'grid-l1' },
-    2: { pairs: 10, time: 120, grid: 'grid-l2' },
-    3: { pairs: 12, time: 150, grid: 'grid-l3' },
-    4: { pairs: 14, time: 180, grid: 'grid-l4' }
+    1: { pairs: 6, time: 30, grid: 'grid-l1' },
+    2: { pairs: 10, time: 60, grid: 'grid-l2' },
+    3: { pairs: 12, time: 100, grid: 'grid-l3' },
+    4: { pairs: 14, time: 100, grid: 'grid-l4' }
 };
 
+// 4. Game State Variables
 let currentLevel = 1, moves = 0, matches = 0, flipped = [], timeLeft = 0, timerInterval, timerActive = false;
 
+// 5. DOM Elements
 const grid = document.getElementById('grid');
 const timerDisplay = document.getElementById('timer');
 const moveDisplay = document.getElementById('moves');
 const pairsDisplay = document.getElementById('pairs-left');
 const levelDisplay = document.getElementById('current-level');
 
+// 6. Initialize Level
 function initLevel(level) {
     grid.innerHTML = '';
     grid.className = `grid ${levels[level].grid}`;
@@ -46,6 +59,7 @@ function initLevel(level) {
     resetStats();
 }
 
+// 7. Click Handling
 grid.addEventListener('click', (e) => {
     const card = e.target.closest('.card');
     if (!card || card.classList.contains('flipped') || flipped.length === 2) return;
@@ -65,9 +79,11 @@ grid.addEventListener('click', (e) => {
     }
 });
 
+// 8. Matching Logic
 function checkMatch() {
     const [c1, c2] = flipped;
     if (c1.dataset.val === c2.dataset.val) {
+        sounds.match.currentTime = 0;
         sounds.match.play().catch(() => {});
         c1.classList.add('matched'); c2.classList.add('matched');
         matches++;
@@ -75,6 +91,8 @@ function checkMatch() {
         flipped = [];
         if (matches === levels[currentLevel].pairs) endLevel(true);
     } else {
+        sounds.fail.currentTime = 0;
+        sounds.fail.play().catch(() => {});
         setTimeout(() => {
             c1.classList.remove('flipped');
             c2.classList.remove('flipped');
@@ -83,12 +101,20 @@ function checkMatch() {
     }
 }
 
+// 9. Timer Functions (Including Emergency Alert Logic)
 function startCountdown() {
     timerActive = true;
     timerInterval = setInterval(() => {
         timeLeft--;
         updateTimerDisplay();
-        if (timeLeft <= 10) document.querySelector('.warning-box').classList.add('active');
+        
+        // --- EMERGENCY ALERT LOGIC ---
+        if (timeLeft <= 10 && timeLeft > 0) {
+            document.querySelector('.warning-box').classList.add('active');
+            sounds.alert.currentTime = 0;
+            sounds.alert.play().catch(() => {}); 
+        }
+        
         if (timeLeft <= 0) endLevel(false);
     }, 1000);
 }
@@ -99,8 +125,11 @@ function updateTimerDisplay() {
     timerDisplay.innerText = `${m}:${s}`;
 }
 
+// 10. Win/Loss Logic
 function endLevel(isWin) {
     clearInterval(timerInterval);
+    stopAlert(); // Ensure alert stops when level ends
+
     const modal = document.getElementById('game-modal');
     const title = document.getElementById('modal-title');
     const desc = document.getElementById('modal-desc');
@@ -110,19 +139,29 @@ function endLevel(isWin) {
     modal.style.display = 'flex';
 
     if (isWin) {
+        sounds.win.currentTime = 0;
         sounds.win.play().catch(() => {});
         confetti({ particleCount: 150, spread: 70 });
-        title.innerText = currentLevel < 4 ? "Level Complete!" : "👑 GAME MASTER!";
-        desc.innerText = `Cleared with ${timeLeft}s left!`;
-        icon.innerText = currentLevel < 4 ? "⭐" : "🏆";
-        btn.innerText = currentLevel < 4 ? "Next Level" : "Restart Universe";
-        if(currentLevel === 4) document.body.classList.add('rainbow-mode');
+        
+        if (currentLevel < 4) {
+            title.innerText = "Level Complete!";
+            desc.innerText = `Cleared with ${timeLeft}s left!`;
+            icon.innerText = "⭐";
+            btn.innerText = "Next Level";
+        } else {
+            title.innerText = "👑 GRAND MASTER!";
+            desc.innerText = "All levels conquered!";
+            icon.innerText = "🏆";
+            btn.innerText = "Restart Universe";
+            document.body.classList.add('rainbow-mode');
+        }
     } else {
+        sounds.lose.currentTime = 0;
         sounds.lose.play().catch(() => {});
         title.innerText = "Time's Up!";
-        desc.innerText = "The clock won this round.";
-        icon.innerText = "⏰";
-        btn.innerText = "Try Again";
+        desc.innerText = "The clock ran out. Try again?";
+        icon.innerText = "💀";
+        btn.innerText = "Retry Level";
     }
 
     btn.onclick = () => {
@@ -139,8 +178,15 @@ function endLevel(isWin) {
     };
 }
 
+// 11. Utilities
+function stopAlert() {
+    sounds.alert.pause();
+    sounds.alert.currentTime = 0;
+}
+
 function resetStats() {
     clearInterval(timerInterval);
+    stopAlert();
     moves = 0; matches = 0; flipped = []; timerActive = false;
     moveDisplay.innerText = "0";
     document.querySelector('.warning-box').classList.remove('active');
