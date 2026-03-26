@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Memory Pro | Rectangular Grid</title>
+    <title>Memory Pro | Sound & Survival</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
@@ -13,28 +13,35 @@
         <div class="nav-left">MEMORY<span>PRO</span></div>
         <div class="nav-center">LEVEL <span id="current-level">1</span></div>
         <div class="nav-right">
-            <button id="theme-toggle" class="theme-btn">
-                <span class="sun">☀️</span>
-                <span class="moon">🌙</span>
-            </button>
+            <button id="theme-toggle" class="theme-btn">🌓</button>
         </div>
     </nav>
 
     <main class="game-area">
         <div class="stats-bar">
-            <div class="stat"><span>Time</span><b id="timer">00:00</b></div>
-            <div class="stat"><span>Moves</span><b id="moves">0</b></div>
-            <div class="stat"><span>Target</span><b id="target-matches">0</b></div>
+            <div class="stat warning-box">
+                <span>Time Left</span>
+                <b id="timer">01:00</b>
+            </div>
+            <div class="stat">
+                <span>Moves</span>
+                <b id="moves">0</b>
+            </div>
+            <div class="stat">
+                <span>Pairs Left</span>
+                <b id="pairs-left">0</b>
+            </div>
         </div>
 
         <div id="grid" class="grid"></div>
     </main>
 
-    <div id="win-modal" class="modal">
+    <div id="game-modal" class="modal">
         <div class="modal-content">
-            <h2>LEVEL CLEARED!</h2>
-            <p>Time: <span id="final-time"></span> | Moves: <span id="final-moves"></span></p>
-            <button id="next-level-btn">Proceed to Next Level</button>
+            <div id="modal-icon" class="badge"></div>
+            <h2 id="modal-title"></h2>
+            <p id="modal-desc"></p>
+            <button id="modal-btn">Continue</button>
         </div>
     </div>
 
