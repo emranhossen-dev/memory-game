@@ -8,12 +8,12 @@ const iconLibrary = ['🍎', '🍌', '🍇', '🍓', '🍒', '🍍', '🥝', '�
 
 // 2. Sound Engine (Update these paths to your custom MP3 files)
 const sounds = {
-    flip: new Audio('sounds/flip.mp3'),      
-    match: new Audio('sounds/match.mp3'),    
-    fail: new Audio('sounds/mismatch.mp3'),  
-    win: new Audio('sounds/win.mp3'),        
-    lose: new Audio('sounds/lose.mp3'),      
-    alert: new Audio('sounds/alert.mp3')     // NEW: Emergency alert for last 10 seconds
+    flip: new Audio('./sounds/flip.mpeg'),      
+    match: new Audio('./sounds/match.mpeg'),    
+    fail: new Audio('./sounds/mismatch.mpeg'),  
+    win: new Audio('./sounds/win.mpeg'),        
+    lose: new Audio('./sounds/lose.mpeg'),      
+    alert: new Audio('./sounds/alert.mpeg')     // NEW: Emergency alert for last 10 seconds
 };
 
 // 3. Level Configurations
